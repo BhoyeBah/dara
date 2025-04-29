@@ -16,7 +16,6 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
-use Symfony\Component\Form\FormError;
 
 #[Route('/encadreur')]
 final class EncadreurController extends AbstractController
@@ -39,7 +38,8 @@ final class EncadreurController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $existEmail = $entityManager->getRepository(User::class)->findOneBy(['email' => $encadreur->getEmail()]);
             if($existEmail){
-                $form->get('email')->addError(new FormError('Cet email est déjà utilisé.'));
+                $this->addFlash('error', 'Cet email est déjà utilisé.');
+                return $this->redirectToRoute('app_encadreur_new');
             }
             // Créer un nouvel utilisateur pour l'encadreur
             $user = new User();

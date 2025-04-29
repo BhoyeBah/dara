@@ -43,7 +43,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(length: 255)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255)]
@@ -55,7 +55,7 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
     private ?Encadreur $encadreur = null;
 
-    
+
     public function getId(): ?int
     {
         return $this->id;
