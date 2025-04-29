@@ -37,48 +37,48 @@ final class EncadreurController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $existEmail = $entityManager->getRepository(User::class)->findOneBy(['email' => $encadreur->getEmail()]);
-            if($existEmail){
+            if ($existEmail) {
                 $this->addFlash('error', 'Cet email est déjà utilisé.');
-                return $this->redirectToRoute('app_encadreur_new');
+            } else {
+                // Créer un nouvel utilisateur pour l'encadreur
+                $user = new User();
+                $user->setEmail($encadreur->getEmail());
+                $user->setNom($encadreur->getNom());
+                $user->setPrenom($encadreur->getPrenom());
+                $user->setTelephone($encadreur->getTelephone());
+                $user->setAdresse($encadreur->getAdresse());
+                $user->setRoles(['ROLE_ENCADREUR']);
+                $user->setStatus(false);
+
+
+                // Définir un mot de passe par défaut "123456789"
+
+                $plainPassword = "123456";
+                $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
+                $user->setPassword($hashedPassword);
+                $encadreur->setUser($user);
+                $user->setEncadreur($encadreur);
+
+                $entityManager->persist($user);
+                $entityManager->persist($encadreur);
+                $entityManager->flush();
+                // Generate a password reset token for the newly created user
+                $resetToken = $resetPasswordHelper->generateResetToken($user);
+                //Envoi mail
+
+                $email = (new TemplatedEmail())
+                    ->from(new Address('bhoyemad11@gmail.com', 'noreply'))
+                    ->to($encadreur->getEmail())
+                    ->subject('Your password reset request')
+                    ->htmlTemplate('reset_password/email.html.twig')
+                    ->context([
+                        'resetToken' => $resetToken,
+                    ]);
+
+                $mailer->send($email);
+                $this->addFlash('success', 'Encadreur enregistré avec succès.');
+                return $this->redirectToRoute('app_encadreur_index', [], Response::HTTP_SEE_OTHER);
             }
-            // Créer un nouvel utilisateur pour l'encadreur
-            $user = new User();
-            $user->setEmail($encadreur->getEmail());
-            $user->setNom($encadreur->getNom());
-            $user->setPrenom($encadreur->getPrenom());
-            $user->setTelephone($encadreur->getTelephone());
-            $user->setAdresse($encadreur->getAdresse());
-            $user->setRoles(['ROLE_ENCADREUR']);
-            $user->setStatus(false);
-
-
-            // Définir un mot de passe par défaut "123456789"
-
-            $plainPassword = "123456";
-            $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
-            $user->setPassword($hashedPassword);
-            $encadreur->setUser($user);
-            $user->setEncadreur($encadreur);
-
-            $entityManager->persist($user);
-            $entityManager->persist($encadreur);
-            $entityManager->flush();
-            // Generate a password reset token for the newly created user
-            $resetToken = $resetPasswordHelper->generateResetToken($user);
-            //Envoi mail
-
-            $email = (new TemplatedEmail())
-                ->from(new Address('bhoyemad11@gmail.com', 'noreply'))
-                ->to($encadreur->getEmail())
-                ->subject('Your password reset request')
-                ->htmlTemplate('reset_password/email.html.twig')
-                ->context([
-                    'resetToken' => $resetToken,
-                ]);
-
-            $mailer->send($email);
-            $this->addFlash('success', 'Encadreur enregistré avec succès.');
-            return $this->redirectToRoute('app_encadreur_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('encadreur/new.html.twig', [
@@ -102,9 +102,16 @@ final class EncadreurController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $entityManager->flush();
 
-            return $this->redirectToRoute('app_encadreur_index', [], Response::HTTP_SEE_OTHER);
+            $existEmail = $entityManager->getRepository(User::class)->findOneBy(['email' => $encadreur->getEmail()]);
+
+            if ($existEmail && $existEmail->getId() !== $encadreur->getUser()->getId()) {
+                $this->addFlash('error', 'Cet email est déjà utilisé.');
+            } else {
+                $entityManager->flush();
+                $this->addFlash('success', 'Encadreur modifié avec succès.');
+                return $this->redirectToRoute('app_encadreur_index', [], Response::HTTP_SEE_OTHER);
+            }
         }
 
         return $this->render('encadreur/edit.html.twig', [

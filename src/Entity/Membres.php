@@ -5,9 +5,12 @@ namespace App\Entity;
 use App\Repository\MembresRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: MembresRepository::class)]
+#[UniqueEntity('email', message: 'Cet email existe déja.')]
+#[UniqueEntity('telephone', message: 'Le numéro de téléphone existe déja.')]
 class Membres
 {
     #[ORM\Id]
@@ -21,13 +24,13 @@ class Membres
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $telephone = null;
 
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
+    #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $email = null;
 
     /**

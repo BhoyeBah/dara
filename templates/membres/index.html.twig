@@ -24,6 +24,16 @@
     </div>
 </div>
 
+{% for type, messages in app.flashes %}
+{% for message in messages %}
+<div class="alert alert-{{ type == 'success' ? 'success' : 'danger' }} alert-dismissible fade show" role="alert">
+	{{ message }}
+	<button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+</div>
+{% endfor %}
+{% endfor %}
+
+
 <!-- Simple Datatable start -->
 <div class="card-box mb-30">
     <div class="pd-20">

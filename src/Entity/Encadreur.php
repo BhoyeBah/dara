@@ -6,8 +6,11 @@ use App\Repository\EncadreurRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 #[ORM\Entity(repositoryClass: EncadreurRepository::class)]
+#[UniqueEntity('email', message: 'Cet email est déjà utilisé.')]
+#[UniqueEntity('telephone', message: 'Ce numéro de téléphone est déjà utilisé.')]
 class Encadreur
 {
     #[ORM\Id]
@@ -21,9 +24,9 @@ class Encadreur
     #[ORM\Column(length: 255)]
     private ?string $prenom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $email = null;
-
+    
     #[ORM\OneToOne(inversedBy: 'encadreur', cascade: ['persist', 'remove'])]
     private ?User $user = null;
 
@@ -33,7 +36,7 @@ class Encadreur
     #[ORM\Column(length: 255)]
     private ?string $adresse = null;
 
-    #[ORM\Column(length:255)]
+    #[ORM\Column(length:255, unique: true)]
     private ?string $telephone = null;
 
     /**

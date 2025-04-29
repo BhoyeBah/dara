@@ -33,6 +33,7 @@ final class SpecialitesController extends AbstractController
             $entityManager->persist($specialite);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Profession enrégistrée avec succès.');
             return $this->redirectToRoute('app_specialites_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -59,6 +60,7 @@ final class SpecialitesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Profession modifiée avec succès.');
             return $this->redirectToRoute('app_specialites_index', [], Response::HTTP_SEE_OTHER);
         }
 

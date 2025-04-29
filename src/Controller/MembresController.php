@@ -80,6 +80,7 @@ final class MembresController extends AbstractController
             $entityManager->persist($membre);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Membre enrégistré avec succès.');
             return $this->redirectToRoute('app_membres_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -110,6 +111,7 @@ final class MembresController extends AbstractController
             }
             $entityManager->flush();
 
+            $this->addFlash('success', 'Membre modifié avec succès.');
             return $this->redirectToRoute('app_membres_index', [], Response::HTTP_SEE_OTHER);
         }
 

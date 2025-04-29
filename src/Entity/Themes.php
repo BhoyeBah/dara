@@ -6,9 +6,11 @@ use App\Repository\ThemesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: ThemesRepository::class)]
+#[UniqueEntity('nom', message: 'Cet thème existe déja.')]
 class Themes
 {
     #[ORM\Id]
@@ -16,7 +18,7 @@ class Themes
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, unique: true)]
     private ?string $nom = null;
 
     #[ORM\Column(type: Types::TEXT)]

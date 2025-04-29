@@ -32,7 +32,7 @@ final class DahirasController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->persist($dahira);
             $entityManager->flush();
-
+            $this->addFlash('success', 'Dahiras enrégistré avec succès.');
             return $this->redirectToRoute('app_dahiras_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -59,6 +59,7 @@ final class DahirasController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Dahiras modifié avec succès.');
             return $this->redirectToRoute('app_dahiras_index', [], Response::HTTP_SEE_OTHER);
         }
 

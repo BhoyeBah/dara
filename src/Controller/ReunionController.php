@@ -96,6 +96,8 @@ class ReunionController extends AbstractController
            
             $entityManager->persist($reunion);
             $entityManager->flush();
+            
+            $this->addFlash('success', 'Reunion enrégistré avec succès.');
             return $this->redirectToRoute("reunion_print_Detail", ['id' => $reunion->getId()]);
         }
 

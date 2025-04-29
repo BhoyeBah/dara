@@ -33,6 +33,7 @@ final class ThemesController extends AbstractController
             $entityManager->persist($theme);
             $entityManager->flush();
 
+            $this->addFlash('success', 'Thème enrégistré avec succès.');
             return $this->redirectToRoute('app_themes_index', [], Response::HTTP_SEE_OTHER);
         }
 
@@ -59,6 +60,7 @@ final class ThemesController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
 
+            $this->addFlash('success', 'Thème modifié avec succès.');
             return $this->redirectToRoute('app_themes_index', [], Response::HTTP_SEE_OTHER);
         }
 
