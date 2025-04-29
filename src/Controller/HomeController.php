@@ -35,7 +35,7 @@ class HomeController extends AbstractController
       
         
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
-
+       
         
         return $this->render('home/dashboard_admin.html.twig');
     }

@@ -47,6 +47,7 @@ final class EncadreurController extends AbstractController
             $user->setRoles(['ROLE_ENCADREUR']);
             $user->setStatus(false);
 
+
             // Définir un mot de passe par défaut "123456789"
             
             $plainPassword = "123456";
@@ -54,12 +55,14 @@ final class EncadreurController extends AbstractController
             $user->setPassword($hashedPassword);
             $encadreur->setUser($user);
             $user->setEncadreur($encadreur);
+
             $entityManager->persist($user);
             $entityManager->persist($encadreur);
             $entityManager->flush();
             // Generate a password reset token for the newly created user
             $resetToken = $resetPasswordHelper->generateResetToken($user);
             //Envoi mail
+
             $email = (new TemplatedEmail())
             ->from(new Address('bhoyemad11@gmail.com', 'noreply'))
             ->to($encadreur->getEmail())
