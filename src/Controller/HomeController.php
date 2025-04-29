@@ -30,12 +30,14 @@ class HomeController extends AbstractController
 
 
     #[Route('/', name: 'app_home')]
-    // #[IsGranted('IS_AUTHENTICATED_FULLY')]
     public function index(Request $request): Response
     {
       
         
         $this->denyAccessUnlessGranted('IS_AUTHENTICATED_FULLY');
+
+        dd('ok');
+
         // Récupérer le mois et l'année depuis la requête (si présents)
         $mois = $request->query->get('mois', date('m'));  // Utilise le mois courant par défaut
         $annee = $request->query->get('annee', date('Y'));  // Utilise l'année courante par défaut
