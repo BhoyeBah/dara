@@ -16,6 +16,7 @@ use Symfony\Component\Mime\Address;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Routing\Attribute\Route;
 use SymfonyCasts\Bundle\ResetPassword\ResetPasswordHelperInterface;
+use Symfony\Component\Form\FormError;
 
 #[Route('/encadreur')]
 final class EncadreurController extends AbstractController
@@ -29,14 +30,17 @@ final class EncadreurController extends AbstractController
     }
 
     #[Route('/new', name: 'app_encadreur_new', methods: ['GET', 'POST'])]
-    public function new(Request $request,UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager,MailerInterface $mailer, ResetPasswordHelperInterface $resetPasswordHelper): Response
+    public function new(Request $request, UserPasswordHasherInterface $passwordHasher, EntityManagerInterface $entityManager, MailerInterface $mailer, ResetPasswordHelperInterface $resetPasswordHelper): Response
     {
         $encadreur = new Encadreur();
         $form = $this->createForm(EncadreurType::class, $encadreur);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-
+            $existEmail = $entityManager->getRepository(User::class)->findOneBy(['email' => $encadreur->getEmail()]);
+            if($existEmail){
+                $form->get('email')->addError(new FormError('Cet email est déjà utilisé.'));
+            }
             // Créer un nouvel utilisateur pour l'encadreur
             $user = new User();
             $user->setEmail($encadreur->getEmail());
@@ -49,7 +53,7 @@ final class EncadreurController extends AbstractController
 
 
             // Définir un mot de passe par défaut "123456789"
-            
+
             $plainPassword = "123456";
             $hashedPassword = $passwordHasher->hashPassword($user, $plainPassword);
             $user->setPassword($hashedPassword);
@@ -64,13 +68,13 @@ final class EncadreurController extends AbstractController
             //Envoi mail
 
             $email = (new TemplatedEmail())
-            ->from(new Address('bhoyemad11@gmail.com', 'noreply'))
-            ->to($encadreur->getEmail())
-            ->subject ('Your password reset request')
-            ->htmlTemplate('reset_password/email.html.twig')
-            ->context([
-            'resetToken' => $resetToken,
-            ]);
+                ->from(new Address('bhoyemad11@gmail.com', 'noreply'))
+                ->to($encadreur->getEmail())
+                ->subject('Your password reset request')
+                ->htmlTemplate('reset_password/email.html.twig')
+                ->context([
+                    'resetToken' => $resetToken,
+                ]);
 
             $mailer->send($email);
             $this->addFlash('success', 'Encadreur enregistré avec succès.');
@@ -112,7 +116,7 @@ final class EncadreurController extends AbstractController
     #[Route('/{id}', name: 'app_encadreur_delete', methods: ['POST'])]
     public function delete(Request $request, Encadreur $encadreur, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$encadreur->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $encadreur->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($encadreur);
             $entityManager->flush();
         }
