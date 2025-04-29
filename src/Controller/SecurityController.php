@@ -13,7 +13,7 @@ class SecurityController extends AbstractController
     #[Route(path: '/connexion', name: 'app_login')]
     public function login(UserRepository $userRepository,AuthenticationUtils $authenticationUtils): Response
     {
-        
+       
         $users = $userRepository->findAll();
         // get the login error if there is one
         $error = $authenticationUtils->getLastAuthenticationError();
