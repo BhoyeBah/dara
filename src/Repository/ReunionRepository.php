@@ -58,13 +58,21 @@ class ReunionRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Reunion
-    //    {
-    //        return $this->createQueryBuilder('r')
-    //            ->andWhere('r.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function reunionCount(): int
+    {
+        return $this->createQueryBuilder('r')
+            ->select('Count(r.id)')
+            ->getQuery()
+            ->getSingleScalarResult();;
+    }
+
+    public function countReunionByDahira($dahira): int
+    {
+        return (int) $this->createQueryBuilder('r')
+            ->select('COUNT(r.id)')
+            ->Where('r.dahiras = :dahira')
+            ->setParameter('dahira', $dahira)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
