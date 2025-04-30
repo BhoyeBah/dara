@@ -60,4 +60,14 @@ class MembresRepository extends ServiceEntityRepository
             ->getQuery()
             ->getSingleScalarResult();
     }
+
+    public function countMembresByDahira($dahira): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->Where('m.dahiras = :dahira')
+            ->setParameter('dahira', $dahira)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
