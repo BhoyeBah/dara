@@ -57,7 +57,7 @@ class HomeController extends AbstractController
                 $totalReunions += (int)$resultat['nombre_reunions'];  // Additionner le nombre de réunions
             }
           $ratio = "$totalReunions/$dahiraCount";
-            
+            $date = \DateTime::createFromFormat('Y-m', "$annee-$mois");
           // Passer les comptages à la vue
           $data = [
               'userCount' => $userCount,
@@ -69,7 +69,7 @@ class HomeController extends AbstractController
               'mois' => $mois,
               'annee' => $annee,
               'ratio' => $ratio,
-              'moisLettre' => $date->format('F')
+             'moisLettre' => $date ? $date->format('F') : ''
           ];
 
         if ($this->isGranted('ROLE_ADMIN')) {
