@@ -16,6 +16,8 @@ class DahirasRepository extends ServiceEntityRepository
         parent::__construct($registry, Dahiras::class);
     }
 
+
+
     //    /**
     //     * @return Dahiras[] Returns an array of Dahiras objects
     //     */
@@ -31,13 +33,11 @@ class DahirasRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Dahiras
-    //    {
-    //        return $this->createQueryBuilder('d')
-    //            ->andWhere('d.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+    public function countDahiras(): int
+    {
+        return (int) $this->createQueryBuilder('d')
+            ->select('COUNT(d.id)')
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }
