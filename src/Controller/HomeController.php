@@ -32,13 +32,16 @@ class HomeController extends AbstractController
         ReunionRepository $reunionRepository,
     ): Response {
 
-        $mois = $request->query->get('mois', date('m'));
-        $annee = $request->query->get('annee', date('Y'));
-        $date = \DateTime::createFromFormat('Y-m', "$annee-$mois");
-        $resultats = $reunionRepository->countReunionsParDahira($mois, $annee);
-        $dahiraCount = $dahirasRepository->countDahiras();
-      
-        $ratio = 10;
+        // $mois = $request->query->get('mois', date('m'));
+        // $annee = $request->query->get('annee', date('Y'));
+        // $date = \DateTime::createFromFormat('Y-m', "$annee-$mois");
+        // $resultats = $reunionRepository->countReunionsParDahira($mois, $annee);
+        // $dahiraCount = $dahirasRepository->countDahiras();
+        // $totalReunions = 0;
+        // foreach ($resultats as $resultat) {
+        //     $totalReunions += (int)$resultat['nombre_reunions'];  // Additionner le nombre de réunions
+        // }
+        // $ratio = "$totalReunions/$dahiraCount";
 
 
         $dahiraCount = $dahirasRepository->countDahiras();
@@ -74,9 +77,7 @@ class HomeController extends AbstractController
             'membreCount' => $membreCount,
             'encadreurCount' => $encadreurCount,
             'allnewMembre' => $allnewMembre,
-            'reunionsCount' => $reunionCounts,
-            'resultats' => $resultats,
-            'ratio' => $ratio
+            'reunionsCount' => $reunionCounts
         ]);
     }
 }
