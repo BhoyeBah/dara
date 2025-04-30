@@ -37,11 +37,8 @@ class HomeController extends AbstractController
         $date = \DateTime::createFromFormat('Y-m', "$annee-$mois");
         $resultats = $reunionRepository->countReunionsParDahira($mois, $annee);
         $dahiraCount = $dahirasRepository->countDahiras();
-        $totalReunions = 0;
-        foreach ($resultats as $resultat) {
-            $totalReunions += (int)$resultat['nombre_reunions'];  // Additionner le nombre de réunions
-        }
-        $ratio = "$totalReunions/$dahiraCount";
+      
+        $ratio = 10;
 
 
         $dahiraCount = $dahirasRepository->countDahiras();
