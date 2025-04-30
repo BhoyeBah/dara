@@ -31,13 +31,12 @@ class EncadreurRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Encadreur
-    //    {
-    //        return $this->createQueryBuilder('e')
-    //            ->andWhere('e.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+       public function encadreurCount(): int
+       {
+           return $this->createQueryBuilder('e')
+               ->select('Count(e.id)')
+               ->getQuery()
+               ->getSingleScalarResult();
+           ;
+       }
 }

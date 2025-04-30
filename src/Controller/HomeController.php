@@ -8,6 +8,7 @@ use App\Entity\Membres;
 use App\Entity\Reunion;
 use App\Entity\User;
 use App\Repository\DahirasRepository;
+use App\Repository\EncadreurRepository;
 use App\Repository\MembresRepository;
 use App\Repository\ReunionRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -33,11 +34,13 @@ class HomeController extends AbstractController
 
     #[Route('/', name: 'app_home')]
     #[IsGranted('IS_AUTHENTICATED_FULLY')]
-    public function index(Request $request,DahirasRepository $dahirasRepository, MembresRepository $membresRepository): Response
+    public function index(Request $request,DahirasRepository $dahirasRepository, 
+    MembresRepository $membresRepository, EncadreurRepository $encadreurRepository): Response
     {
        
         $dahiraCount = $dahirasRepository->countDahiras();
         $membreCount = $membresRepository->membreCount();
+        $encadreurCount = $encadreurRepository->encadreurCount();
       
         if ($this->isGranted('ROLE_ENCADREUR')) {
             $user = $this->getUser();
@@ -61,7 +64,8 @@ class HomeController extends AbstractController
         
         return $this->render('home/dashboard_admin.html.twig', [
             'dahiraCount' => $dahiraCount,
-            'membreCount' => $membreCount
+            'membreCount' => $membreCount,
+            'encadreurCount' => $encadreurCount,
         ]);
     }
 }
