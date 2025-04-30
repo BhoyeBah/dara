@@ -14,7 +14,7 @@ class SpecialitesType extends AbstractType
     {
         $builder
             ->add('nom',TextType::class)
-            ->add('description',TextType::class)
+            ->add('description')
         ;
     }
 

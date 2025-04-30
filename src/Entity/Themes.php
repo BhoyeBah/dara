@@ -21,7 +21,7 @@ class Themes
     #[ORM\Column(length: 255, unique: true)]
     private ?string $nom = null;
 
-    #[ORM\Column(type: Types::TEXT)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     /**

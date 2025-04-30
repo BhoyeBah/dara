@@ -33,12 +33,6 @@ class Membres
     #[ORM\Column(length: 255, nullable: true, unique: true)]
     private ?string $email = null;
 
-    /**
-     * @var Collection<int, Specialites>
-     */
-    #[ORM\ManyToMany(targetEntity: Specialites::class, inversedBy: 'membres')]
-    private Collection $specialite;
-
     #[ORM\ManyToOne(inversedBy: 'membres')]
     private ?Dahiras $dahiras = null;
 
@@ -69,9 +63,11 @@ class Membres
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $poste = null;
 
+    #[ORM\ManyToOne(inversedBy: 'membres')]
+    private ?Specialites $specialite = null;
+
     public function __construct()
     {
-        $this->specialite = new ArrayCollection();
         $this->presences = new ArrayCollection();
         $this->intervenants = new ArrayCollection();
         $this->reunions = new ArrayCollection();
@@ -134,28 +130,6 @@ class Membres
     public function setEmail(?string $email): static
     {
         $this->email = $email;
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Specialites>
-     */
-    public function getSpecialite(): Collection
-    {
-        return $this->specialite;
-    }
-
-    public function addSpecialite(Specialites $specialite): static
-    {
-        if (!$this->specialite->contains($specialite)) {
-            $this->specialite->add($specialite);
-        }
-        return $this;
-    }
-
-    public function removeSpecialite(Specialites $specialite): static
-    {
-        $this->specialite->removeElement($specialite);
         return $this;
     }
 
@@ -281,6 +255,18 @@ class Membres
     public function setPoste(?string $poste): static
     {
         $this->poste = $poste;
+        return $this;
+    }
+
+    public function getSpecialite(): ?Specialites
+    {
+        return $this->specialite;
+    }
+
+    public function setSpecialite(?Specialites $specialite): static
+    {
+        $this->specialite = $specialite;
+
         return $this;
     }
 }

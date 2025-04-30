@@ -67,17 +67,7 @@
                         <td>{{ membre.telephone }}</td>
                         <td>{{ membre.adresse }}</td>
                         <td>{{ membre.poste }}</td>
-                        <td>
-                        {% if membre.specialite is not empty %}
-                            <ul>
-                                {% for specialite in membre.specialite %}
-                                    <li>{{ specialite.nom }}</li>
-                                {% endfor %}
-                            </ul>
-                        {% else %}
-                            Pas de profession
-                        {% endif %}
-                        </td>
+                        <td>{{ membre.specialite.nom }}</td>
                         {% if is_granted('ROLE_ADMIN') %}
                         <td>{{ membre.dahiras ? membre.dahiras.nom : 'Pas de dahira'}}</td>
                         {% endif %}       

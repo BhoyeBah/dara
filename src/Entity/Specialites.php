@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\SpecialitesRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SpecialitesRepository::class)]
@@ -18,13 +19,13 @@ class Specialites
     #[ORM\Column(length: 255)]
     private ?string $nom = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
     /**
      * @var Collection<int, Membres>
      */
-    #[ORM\ManyToMany(targetEntity: Membres::class, mappedBy: 'specialite')]
+    #[ORM\OneToMany(targetEntity: Membres::class, mappedBy: 'specialite')]
     private Collection $membres;
 
     public function __construct()
@@ -54,7 +55,7 @@ class Specialites
         return $this->description;
     }
 
-    public function setDescription(string $description): static
+    public function setDescription(?string $description): static
     {
         $this->description = $description;
 
@@ -73,7 +74,7 @@ class Specialites
     {
         if (!$this->membres->contains($membre)) {
             $this->membres->add($membre);
-            $membre->addSpecialite($this);
+            $membre->setSpecialite($this);
         }
 
         return $this;
@@ -82,9 +83,14 @@ class Specialites
     public function removeMembre(Membres $membre): static
     {
         if ($this->membres->removeElement($membre)) {
-            $membre->removeSpecialite($this);
+            // set the owning side to null (unless already changed)
+            if ($membre->getSpecialite() === $this) {
+                $membre->setSpecialite(null);
+            }
         }
 
         return $this;
     }
+
+   
 }

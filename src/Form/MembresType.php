@@ -49,7 +49,7 @@ class MembresType extends AbstractType
             ->add('specialite', EntityType::class, [
                 'class' => Specialites::class,
                 'choice_label' => 'nom',
-                'multiple' => true,
+                'multiple' => false,
             ])
             ->add('poste', ChoiceType::class, [
                 'choices' => [
@@ -57,7 +57,7 @@ class MembresType extends AbstractType
                     'Secrétaire' => 'Secretaire',
                     'Encadreur' => 'Encadreur',
                 ],
-                'expanded' => false, // Affiche un select au lieu de boutons radio
+                'expanded' => false, 
                 'multiple' => false,
                 'placeholder' => 'Veuillez sélectionner un poste',
                 'required' => false,
