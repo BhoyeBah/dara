@@ -44,7 +44,7 @@ class HomeController extends AbstractController
       
         if ($this->isGranted('ROLE_ENCADREUR')) {
             $user = $this->getUser();
-            $encadreur = $user->getEn;
+            $encadreur = $user->getEncadreur();
             $dahira = $encadreur->getDahiras();
         
             $newMembre = $this->entityManager->getRepository(Membres::class)->count(['isnew' => true]);
