@@ -25,22 +25,18 @@ class ReunionRepository extends ServiceEntityRepository
      */
     public function countReunionsParDahira(int $mois, int $annee)
     {
-        // Créer une date de début et de fin pour le mois donné
-        $dateDebut = new \DateTime("$annee-$mois-01 00:00:00");
-        $dateFin = clone $dateDebut;
-        $dateFin->modify('last day of this month')->setTime(23, 59, 59);
+        $dateDebut = new \DateTime("$annee-$mois-01");
+        $dateFin = (clone $dateDebut)->modify('last day of this month')->setTime(23, 59, 59);
 
-        // Créer la requête DQL
-        $qb = $this->createQueryBuilder('r')
-            ->select('dahira.id AS dahira_id', 'COUNT(r.id) AS nombre_reunions')
-            ->innerJoin('r.dahiras', 'dahira')
+        return $this->createQueryBuilder('r')
+            ->select('d.id AS dahira_id', 'COUNT(r.id) AS nombre_reunions')
+            ->innerJoin('r.dahiras', 'd')
             ->where('r.date BETWEEN :dateDebut AND :dateFin')
-            ->groupBy('dahira.id')
+            ->groupBy('d.id')
             ->setParameter('dateDebut', $dateDebut)
-            ->setParameter('dateFin', $dateFin);
-
-        // Exécuter la requête et retourner les résultats
-        return $qb->getQuery()->getResult();
+            ->setParameter('dateFin', $dateFin)
+            ->getQuery()
+            ->getResult();
     }
 
     //    /**
