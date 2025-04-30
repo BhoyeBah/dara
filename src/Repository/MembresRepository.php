@@ -31,12 +31,33 @@ class MembresRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-       public function membreCount(): int
-       {
-           return $this->createQueryBuilder('m')
-               ->select('Count(m.id)')
-               ->getQuery()
-               ->getSingleScalarResult();
-           ;
-       }
+    public function membreCount(): int
+    {
+        return $this->createQueryBuilder('m')
+            ->select('Count(m.id)')
+            ->getQuery()
+            ->getSingleScalarResult();;
+    }
+
+    public function countNewMembres(): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->where('m.isnew = :isnew')
+            ->setParameter('isnew', true)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
+
+    public function countNewMembresByDahira($dahira): int
+    {
+        return (int) $this->createQueryBuilder('m')
+            ->select('COUNT(m.id)')
+            ->where('m.isnew = :isnew')
+            ->andWhere('m.dahiras = :dahira')
+            ->setParameter('isnew', true)
+            ->setParameter('dahira', $dahira)
+            ->getQuery()
+            ->getSingleScalarResult();
+    }
 }

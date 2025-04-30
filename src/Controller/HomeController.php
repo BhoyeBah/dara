@@ -41,13 +41,13 @@ class HomeController extends AbstractController
         $dahiraCount = $dahirasRepository->countDahiras();
         $membreCount = $membresRepository->membreCount();
         $encadreurCount = $encadreurRepository->encadreurCount();
-      
+        $allnewMembre = $membresRepository->countNewMembres();
         if ($this->isGranted('ROLE_ENCADREUR')) {
             $user = $this->getUser();
             $encadreur = $user->getEncadreur();
             $dahira = $encadreur->getDahiras();
-        
-            $newMembre = $this->entityManager->getRepository(Membres::class)->count(['isnew' => true]);
+
+            $newMembre = $membresRepository->countNewMembresByDahira($dahira);
             $membreCount = $this->entityManager->getRepository(Membres::class)->count(['dahiras' => $dahira]);
             $reunionCount = $this->entityManager->getRepository(Reunion::class)->count(['dahiras' => $dahira]);
         
@@ -66,6 +66,7 @@ class HomeController extends AbstractController
             'dahiraCount' => $dahiraCount,
             'membreCount' => $membreCount,
             'encadreurCount' => $encadreurCount,
+            'allnewMembre' => $allnewMembre,
         ]);
     }
 }
