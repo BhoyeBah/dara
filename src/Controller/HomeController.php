@@ -42,6 +42,7 @@ class HomeController extends AbstractController
         // dd($resultats);
         // Compter les dahiras
           $membreCount = $this->entityManager->getRepository(Membres::class)->count([]);
+          $newMembre = $this->entityManager->getRepository(Membres::class)->count(['isnew' => true]);
           if($this->IsGranted('ROLE_USER')){
             $userCount = $this->entityManager->getRepository(User::class)->count(['roles' => 'ROLE_USER']);
           }
@@ -68,7 +69,7 @@ class HomeController extends AbstractController
               'mois' => $mois,
               'annee' => $annee,
               'ratio' => $ratio,
-              'moisLettre' => $date->format('F'),
+              'moisLettre' => $date->format('F')
           ];
 
         if ($this->isGranted('ROLE_ADMIN')) {
@@ -89,6 +90,7 @@ class HomeController extends AbstractController
                 'dahira' => $dahira,
                 'membreCount' => $membreCount,
                 'reunionCount' => $reunionCount,
+                'newMembre' => $newMembre
             ];
         
             return $this->render('home/dashboard_encadreur.html.twig', $dataDahira);

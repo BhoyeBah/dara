@@ -66,6 +66,9 @@ class Membres
     #[ORM\ManyToOne(inversedBy: 'membres')]
     private ?Specialites $specialite = null;
 
+    #[ORM\Column(nullable: true)]
+    private ?bool $isnew = null;
+
     public function __construct()
     {
         $this->presences = new ArrayCollection();
@@ -266,6 +269,18 @@ class Membres
     public function setSpecialite(?Specialites $specialite): static
     {
         $this->specialite = $specialite;
+
+        return $this;
+    }
+
+    public function isnew(): ?bool
+    {
+        return $this->isnew;
+    }
+
+    public function setIsnew(?bool $isnew): static
+    {
+        $this->isnew = $isnew;
 
         return $this;
     }

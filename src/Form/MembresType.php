@@ -8,6 +8,7 @@ use App\Entity\Membres;
 use App\Entity\Specialites;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -60,6 +61,10 @@ class MembresType extends AbstractType
                 'expanded' => false, 
                 'multiple' => false,
                 'placeholder' => 'Veuillez sélectionner un poste',
+                'required' => false,
+            ])
+            ->add('isnew', CheckboxType::class, [
+                'label' => 'Est-ce un nouveau membre ?',
                 'required' => false,
             ])
        ;

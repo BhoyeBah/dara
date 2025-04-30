@@ -69,7 +69,6 @@ final class MembresController extends AbstractController
         $membre->setNumero($memberNumero);
            
         if ($form->isSubmitted() && $form->isValid()) {
-            
             $membre->setEncadreur($encadreur);
             $membre->setDahiras($dahira);
             // dd($membre,$encadreur,$dahira->getNom());
