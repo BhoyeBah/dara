@@ -31,13 +31,12 @@ class MembresRepository extends ServiceEntityRepository
     //        ;
     //    }
 
-    //    public function findOneBySomeField($value): ?Membres
-    //    {
-    //        return $this->createQueryBuilder('m')
-    //            ->andWhere('m.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+       public function membreCount(): int
+       {
+           return $this->createQueryBuilder('m')
+               ->select('Count(m.id)')
+               ->getQuery()
+               ->getSingleScalarResult();
+           ;
+       }
 }
