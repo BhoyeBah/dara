@@ -55,6 +55,6 @@ class HomeController extends AbstractController
             return $this->render('home/dashboard_encadreur.html.twig', $dataDahira);
         }
         
-    dd('Pour admin');
+        return $this->render('home/dashboard_admin.html.twig');
     }
 }
