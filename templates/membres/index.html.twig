@@ -72,7 +72,7 @@
                         <td>{{ membre.dahiras ? membre.dahiras.nom : 'Pas de dahira'}}</td>
                         {% endif %}       
                         <td>
-                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_ENCADREUR') %}
+                        {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_ENCADREUR') or is_granted('ROLE_USER') %}
                             <a href="{{ path('app_membres_show', {'id': membre.id}) }}" class="btn btn-sm btn-success"><i class="dw dw-eye"></i></a>
                             <a href="{{ path('app_membres_edit', {'id': membre.id}) }}" class="btn btn-sm btn-secondary"><i class="dw dw-edit2"></i></a>
                         {% endif %}

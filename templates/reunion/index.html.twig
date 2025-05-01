@@ -16,9 +16,11 @@
 				</ol>
 			</nav>
 		</div>
+		{% if is_granted('ROLE_ENCADREUR') %}
 		<div class="col-md-6 col-sm-12 text-right">
 			<a href="{{ path('app_reunion_new') }}" class="btn btn-success">Créer une reunion</a>
 		</div>
+		{% endif %}
 	</div>
 </div>
 

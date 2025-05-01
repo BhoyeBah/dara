@@ -26,24 +26,23 @@ final class MembresController extends AbstractController
     public function index(MembresRepository $membresRepository): Response
     {
         $currentUser = $this->getUser();
-        // Si l'utilisateur a le rôle ADMIN
-        if(in_array('ROLE_ADMIN', $currentUser->getRoles(), true)){
-            $membres = $membresRepository->findAll(); 
-            // Montre tous les membres
-        }else{
 
-        $currentUser = $this->getUser();
+        if (in_array('ROLE_ENCADREUR', $currentUser->getRoles(), true)) {
+            $encadreur = $currentUser->getEncadreur();
 
-        $encadreur = $currentUser->getEncadreur();
-
-        $dahiras = $encadreur->getDahiras();
-        
-        $membres = $membresRepository->findBy(['dahiras' => $dahiras]);
+            if ($encadreur) {
+                $dahiras = $encadreur->getDahiras();
+                $membres = $membresRepository->findBy(['dahiras' => $dahiras]);
+            } else {
+                $membres = [];
+            }
+        } else {
+            $membres = $membresRepository->findAll();
         }
+
         return $this->render('membres/index.html.twig', [
             'membres' => $membres,
         ]);
-
     }
 
     #[Route('/new', name: 'app_membres_new', methods: ['GET', 'POST'])]
@@ -57,17 +56,17 @@ final class MembresController extends AbstractController
         $currentUser = $this->getUser();
 
         $encadreur = $currentUser->getEncadreur();
-         // Récupérer le dahira de l'encadreur
-         if($this->isGranted('ROLE_ADMIN')){
+        // Récupérer le dahira de l'encadreur
+        if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_membres_index');
-         }
-         
-         $dahira = $encadreur->getDahiras();
-       // Récupérer le numéro du membre
+        }
+
+        $dahira = $encadreur->getDahiras();
+        // Récupérer le numéro du membre
         $memberNumero = $this->numerogenerator->generateNumberMembre($dahira);
         // Créer le membre avec le numéro généré
         $membre->setNumero($memberNumero);
-           
+
         if ($form->isSubmitted() && $form->isValid()) {
             $membre->setEncadreur($encadreur);
             $membre->setDahiras($dahira);
@@ -75,7 +74,7 @@ final class MembresController extends AbstractController
             if (empty($membre->getPoste())) {
                 $membre->setPoste('Membre');
             }
-    
+
             $entityManager->persist($membre);
             $entityManager->flush();
 
@@ -102,9 +101,9 @@ final class MembresController extends AbstractController
     {
         $form = $this->createForm(MembresType::class, $membre);
         $form->handleRequest($request);
-       
+
         if ($form->isSubmitted() && $form->isValid()) {
-           
+
             if (empty($membre->getPoste())) {
                 $membre->setPoste('Membre');
             }
@@ -123,7 +122,7 @@ final class MembresController extends AbstractController
     #[Route('/{id}', name: 'app_membres_delete', methods: ['POST'])]
     public function delete(Request $request, Membres $membre, EntityManagerInterface $entityManager): Response
     {
-        if ($this->isCsrfTokenValid('delete'.$membre->getId(), $request->getPayload()->getString('_token'))) {
+        if ($this->isCsrfTokenValid('delete' . $membre->getId(), $request->getPayload()->getString('_token'))) {
             $entityManager->remove($membre);
             $entityManager->flush();
         }

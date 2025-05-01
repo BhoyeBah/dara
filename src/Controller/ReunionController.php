@@ -14,6 +14,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
+
 #[Route('/reunion')]
 class ReunionController extends AbstractController
 {
@@ -22,22 +23,24 @@ class ReunionController extends AbstractController
     public function __construct(Numerogenerator $numerogenerator)
     {
         $this->numerogenerator = $numerogenerator;
-
     }
 
     #[Route('/', name: 'app_reunion_index')]
     public function index(ReunionRepository $reunionRepository): Response
     {
- 
         $currentUser = $this->getUser();
-        // Si l'utilisateur a le rôle ADMIN
-        if(in_array('ROLE_ADMIN', $currentUser->getRoles(), true)){
-            $reunion = $reunionRepository->findAll(); 
-            // Montre tous les membres
-        }else{
-        $encadreur = $currentUser->getEncadreur();
-        $dahira = $encadreur->getDahiras();
-        $reunion = $reunionRepository->findBy(['dahiras' => $dahira], ['date' => 'DESC']);
+
+        if (in_array('ROLE_ENCADREUR', $currentUser->getRoles(), true)) {
+            $encadreur = $currentUser->getEncadreur();
+
+            if ($encadreur) {
+                $dahiras = $encadreur->getDahiras();
+                $reunion = $reunionRepository->findBy(['dahiras' => $dahiras], ['date' => 'DESC']);
+            } else {
+                $reunion = [];
+            }
+        } else {
+            $reunion = $reunionRepository->findAll();
         }
 
         return $this->render('reunion/index.html.twig', [
@@ -46,57 +49,57 @@ class ReunionController extends AbstractController
     }
 
     #[Route('/new', name: 'app_reunion_new', methods: ['GET', 'POST'])]
-    
+
     public function new(Request $request, EntityManagerInterface $entityManager, MembresRepository $membresRepository): Response
     {
         $reunion = new Reunion();
         $currentUser = $this->getUser();
         $encadreur = $currentUser->getEncadreur();
-        if($this->isGranted('ROLE_ADMIN')){
+        if ($this->isGranted('ROLE_ADMIN')) {
             return $this->redirectToRoute('app_reunion_index');
-         }
+        }
         $dahira = $encadreur->getDahiras();
         $membres = $membresRepository->findBy(['dahiras' => $dahira]);
 
         $form = $this->createForm(ReunionType::class, $reunion, [
-            'dahira' => $dahira, // Passer l'option dahira
+            'dahira' => $dahira,
         ]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-          
+
             // Pour chaque membre, créez une présence
             foreach ($membres as $membre) {
                 $presence = new Presence();
-                $presence->setMembre($membre); 
-                $presence->setReunion($reunion); 
-                $presence->setDate(new \DateTime());    
-                
+                $presence->setMembre($membre);
+                $presence->setReunion($reunion);
+                $presence->setDate(new \DateTime());
+
                 // Si la case est cochée pour ce membre, il est présent
                 if ($request->request->get('membre_' . $membre->getId())) {
                     $presence->setPresent(true);
                 } else {
                     $presence->setPresent(false);
                 }
-             
+
                 // Persister chaque présence individuellement
                 $entityManager->persist($presence);
-                $reunion->addPresence($presence);           
-            }  
+                $reunion->addPresence($presence);
+            }
             $dateReunion = $reunion->getDate(); // Assumez que la date est définie dans le formulaire
             if ($dateReunion) {
                 $numeroRef = $this->numerogenerator->gereratorNumeroRef($dahira, $dateReunion);
                 $reunion->setNumero($numeroRef);
             }
-            
+
 
             $reunion->setDahiras($dahira);
             $reunion->setEncadreur($encadreur);
             // dd($request,$presence,$intervenant,$reunion);
-           
+
             $entityManager->persist($reunion);
             $entityManager->flush();
-            
+
             $this->addFlash('success', 'Reunion enrégistré avec succès.');
             return $this->redirectToRoute("reunion_print_Detail", ['id' => $reunion->getId()]);
         }
@@ -107,7 +110,7 @@ class ReunionController extends AbstractController
             'membres' => $membres,
         ]);
     }
-    
+
     #[Route('/{id}', name: 'app_reunion_show', methods: ['GET'])]
     public function show(Reunion $reunion): Response
     {
@@ -122,18 +125,17 @@ class ReunionController extends AbstractController
     }
 
     #[Route('/imprimer/{id}', name: 'reunion_print_Detail', methods: ['GET'])]
-    public function impression(Reunion $reunion){
+    public function impression(Reunion $reunion)
+    {
 
         // Récupérer les présences associées à cette réunion
         $presences = $reunion->getPresences();
         $intervenants = $reunion->getIntervenants();
 
-        return $this->render("reunion/rapport_print.html.twig",[
+        return $this->render("reunion/rapport_print.html.twig", [
             'reunion' => $reunion,
             'presences' => $presences,
             'intervenants' => $intervenants,
         ]);
-
     }
-
 }
