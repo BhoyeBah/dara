@@ -49,6 +49,7 @@ class HomeController extends AbstractController
         $reunionCounts = $reunionRepository->reunionCount();
 
 
+
         if ($this->isGranted('ROLE_ENCADREUR')) {
             $user = $this->getUser();
             $encadreur = $user->getEncadreur();
@@ -70,13 +71,15 @@ class HomeController extends AbstractController
         }
 
 
-        return $this->render('home/dashboard_admin.html.twig', [
-            'dahiraCount' => $dahiraCount,
-            'membreCount' => $membreCount,
-            'encadreurCount' => $encadreurCount,
-            'allnewMembre' => $allnewMembre,
-            'reunionsCount' => $reunionCounts,
-            'ratio' => $ratio,
-        ]);
+        if ($this->isGranted('ROLE_ADMIN') || $this->isGranted('ROLE_PRESIDENT')) {
+            return $this->render('home/dashboard_admin.html.twig', [
+                'dahiraCount' => $dahiraCount,
+                'membreCount' => $membreCount,
+                'encadreurCount' => $encadreurCount,
+                'allnewMembre' => $allnewMembre,
+                'reunionsCount' => $reunionCounts,
+                'ratio' => $ratio,
+            ]);
+        }
     }
 }

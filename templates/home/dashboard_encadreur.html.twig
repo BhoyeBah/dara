@@ -17,15 +17,18 @@
 			<p class="font-18 max-width-600">
 				Vous êtes connecté en tant qu'
 				<strong>
-					{% for role in app.user.roles %}
-					{% if role == 'ROLE_ADMIN' %}
+					{% if 'ROLE_ADMIN' in app.user.roles %}
 					Administrateur
-					{% elseif role == 'ROLE_ENCADREUR' %}
+					{% elseif 'ROLE_PRESIDENT' in app.user.roles %}
+					Président
+					{% elseif 'ROLE_ENCADREUR' in app.user.roles %}
 					Encadreur
+					{% else %}
+					Utilisateur
 					{% endif %}
-					{% endfor %}
 				</strong>!
 			</p>
+
 		</div>
 	</div>
 </div>

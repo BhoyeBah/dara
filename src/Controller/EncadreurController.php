@@ -47,7 +47,13 @@ final class EncadreurController extends AbstractController
                 $user->setPrenom($encadreur->getPrenom());
                 $user->setTelephone($encadreur->getTelephone());
                 $user->setAdresse($encadreur->getAdresse());
-                $user->setRoles(['ROLE_ENCADREUR']);
+
+                // Vérifier si l'encadreur est président
+                $roles = ['ROLE_ENCADREUR'];
+                if ($form->get('isPresident')->getData()) {
+                    $roles = ['ROLE_PRESIDENT'];
+                }
+                $user->setRoles($roles);
                 $user->setStatus(false);
 
 

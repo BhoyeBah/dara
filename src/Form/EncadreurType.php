@@ -7,6 +7,7 @@ use App\Entity\Encadreur;
 use App\Entity\User;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -48,6 +49,12 @@ class EncadreurType extends AbstractType
                 'class' => Dahiras::class,
                 'choice_label' => 'nom',
             ])
+            ->add('isPresident', CheckboxType::class, [
+                'label'    => 'Est président ?',
+                'required' => false,
+                'mapped'   => false, // Champ non lié directement à l'entité
+                'attr'     => ['class' => 'form-check-input'],
+            ]);
         ;
     }
 
